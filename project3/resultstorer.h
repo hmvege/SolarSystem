@@ -4,6 +4,8 @@
 #include <string>
 #include "system.h"
 
+using std::string;
+
 class ResultStorer
 {
 private:
@@ -15,9 +17,9 @@ private:
     std::vector<vec3> m_velocities;
     std::vector<std::string> m_objectNames;
 
+    // Contigious memory allocation
     inline unsigned long getIndex(unsigned long iStep, unsigned long iObj) {
         return iObj + m_NObjects*iStep;
-//        return i + Ni*(j + Nj*k);
     }
 
 public:
@@ -25,7 +27,7 @@ public:
     ~ResultStorer();
 
     void pushResults(System *S, unsigned long iStep);
-    void writeToFile();
+    void writeToFile(string runName);
 };
 
 #endif // RESULTSTORER_H

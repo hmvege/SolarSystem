@@ -10,7 +10,9 @@ SOURCES += \
     integrators/integrator.cpp \
     resultstorer.cpp \
     math/vec3.cpp \
-    integrators/forwardeuler.cpp
+    integrators/forwardeuler.cpp \
+    force/force.cpp \
+    force/newtoniangravity.cpp
 
 HEADERS += \
     system.h \
@@ -18,4 +20,6 @@ HEADERS += \
     integrators/integrator.h \
     resultstorer.h \
     math/vec3.h \
-    integrators/forwardeuler.h
+    integrators/forwardeuler.h \
+    force/force.h \
+    force/newtoniangravity.h

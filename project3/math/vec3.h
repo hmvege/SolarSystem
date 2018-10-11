@@ -1,23 +1,47 @@
 #ifndef VEC3_H
 #define VEC3_H
 
+#include <iostream>
+
 class vec3
 {
 private:
     double vec[3];
 public:
+    // Default constructor, uninitialized values
     vec3();
+
+    // Parametetrized constructor, allows vec3(0) -> {0,0,0}
     vec3(double val);
+
+    // Parametetrized constructor, allows vec3(1,2,3) -> {1,2,3}
     vec3(double x, double y, double z);
-    vec3(const vec3 &obj);
+
+    // Copy constructor, allows
+    vec3(vec3 const &copy);
+
+    // Destructor
     ~vec3() {}
 
+    // Setters
+    void setXYZ(double x, double y, double z) {
+        vec[0] = x;
+        vec[1] = y;
+        vec[2] = z;
+    }
+
+    // Getters
+    double x() const { return vec[0]; }
+    double y() const { return vec[1]; }
+    double z() const { return vec[2]; }
+
+    // Overloads [], makes it possible to retrieve elements by a[i].
     inline double &operator[](unsigned long i) { return vec[i]; }
 
-//    vec3 &operator=(const vec3 &B);
+    // Copy assignement constructor
     vec3 &operator=(const vec3 &other);
 
-    // Operations
+    // Operator overloading
     vec3 &operator*=(const vec3 other);
     vec3 &operator+=(const vec3 other);
     vec3 &operator-=(const vec3 other);
@@ -26,9 +50,11 @@ public:
     vec3 &operator*=(const double b);
     vec3 &operator/=(const double b);
 
-    // Prient operator
-//    friend std::ostream& operator<<(std::ostream& os, const vec3& v);
-
+    // A cout << foo overload method.
+    friend std::ostream &operator<<(std::ostream &os, const vec3 &V) {
+        os << "[" << V.x() << ", " << V.y() << ", " << V.z() << "]";
+        return os;
+    }
     inline double length();
 
 };
@@ -136,10 +162,5 @@ inline vec3 &vec3::operator-=(const double b)
     return *this;
 }
 
-//std::ostream& operator<<(std::ostream& os, const vec3& v)
-//{
-//    os << v.vec[0] << " " << v.vec[1] << " " << v.vec[2];
-//    return os;
-//}
 
 #endif // VEC3_H

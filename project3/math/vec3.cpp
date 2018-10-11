@@ -18,3 +18,11 @@ vec3::vec3(double x, double y, double z)
     vec[2] = z;
 }
 
+vec3::vec3(vec3 const &copy)
+{
+    // Uncomment to see what methods is called when!
+//    cout << "Using copy constructor" << endl;
+    vec[0] = copy.vec[0];
+    vec[1] = copy.vec[1];
+    vec[2] = copy.vec[2];
+}

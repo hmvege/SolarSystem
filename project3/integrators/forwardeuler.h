@@ -3,10 +3,9 @@
 
 #include "integrators/integrator.h"
 
-class ForwardEuler : Integrator
+class ForwardEuler : public Integrator
 {
 public:
-
     ForwardEuler();
     ~ForwardEuler();
 

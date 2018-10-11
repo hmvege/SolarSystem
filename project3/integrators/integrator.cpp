@@ -10,3 +10,7 @@ Integrator::~Integrator()
     // Destruction
 }
 
+void Integrator::integrate(System *system, const double h)
+{
+
+}

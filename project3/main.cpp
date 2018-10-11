@@ -3,6 +3,7 @@
 #include "integrators/forwardeuler.h"
 //#include "integrators/integrator.h"
 #include "resultstorer.h"
+#include "force/newtoniangravity.h"
 
 #include <cmath>
 
@@ -45,34 +46,60 @@ int main()
     double mars_mass = 6.4171e23;
     SObject *marsObj = new SObject(mars_pos, mars_vel, mars_mass, "mars");
 
+    // Specifies the number of steps, time to run for and step size
     unsigned long NSteps = 100;
     double T = 1; // Time, years
     double h = T / double(NSteps);
 
+    // Specify run name here
+    string runName = "systemrun1";
+
+    // Creates our system
     System S;
+
+    // New objects
     S.addObject(sunObj);
     S.addObject(earthObj);
     S.addObject(marsObj);
     S.addObject(jupiterObj);
 
-    ForwardEuler sysIntegrator;
+    double G = 4*M_PI*M_PI;
+    double sunMass = 1988500e24;
+
+    ForwardEuler *integrator = new ForwardEuler;
+    NewtonianGravity *force = new NewtonianGravity(G, sunMass);
+
+    S.setIntegrator(integrator);
+    S.setForce(force);
+
     ResultStorer res(&S, NSteps+1);
 
-
-
+    // Push initial positions and velocities to file.
     res.pushResults(&S, 0);
-//    res.writeToFile();
 
-//    exit(1);
+    // Prints start position
+    S.objects()[1]->printObject();
+
     for (unsigned int i = 0; i<NSteps;i++) {
-        sysIntegrator.integrate(&S, h);
-//        S.objects()[0]->printObject();
-        S.objects()[1]->printObject();
+        // Resets old forces
+//        S.resetForces();
 
+        // Calculate forces
+//        force->calculateForces(&S);
+
+        // Integrate system one step ahead
+//        integrator->integrate(&S, h);
+        S.update(h);
+
+        // Pushes new results in
         res.pushResults(&S, i + 1);
-//        break;
     }
-    res.writeToFile();
+
+    // Prints final position to ensure it is the same as the start position
+    S.objects()[1]->printObject();
+
+    // Writes the results to file
+    res.writeToFile(runName);
 
     return 0;
 }
