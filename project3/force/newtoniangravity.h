@@ -14,6 +14,7 @@ public:
     ~NewtonianGravity();
 
     void calculateForces(System *system);
+    void calculatePotentialEnergy(System *system);
 };
 
 #endif // NEWTONIANGRAVITY_H

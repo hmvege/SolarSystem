@@ -20,15 +20,19 @@ private:
 
     Force *m_force;
 
+    double m_normalizerMass;
+
     vector<SObject*> m_objects;
 public:
-    System();
+    System(double normalizerMass);
     ~System();
 
     void addObject(SObject *object) { m_objects.push_back(object); }
     void update(const double timestep);
 
     void resetForces();
+    void calculateForces();
+    void updateEnergies();
 
     void setIntegrator(Integrator *integrator) { m_integrator = integrator; }
     void setForce(Force *force) { m_force = force; }

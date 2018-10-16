@@ -9,27 +9,31 @@ for filename in os.listdir("data"):
 
     filepath = os.path.join("data", filename)
 
-    object_name = filename.split("_")[0]
+    object_name = filename.split("_")[1]
     print(object_name.capitalize())
 
-    x, y, z, vx, vy, vz = np.loadtxt(filepath).T
+    x, y, z, vx, vy, vz, Lx, Ly, Lz, KE, PE = np.loadtxt(filepath).T
 
     object_data = {
         "pos": np.array((x, y, z)),
         "vel": np.array((vx, vy, vz)),
+        "angmom": np.array((Lx, Ly, Lz)),
+        "kinetic_energy": KE,
+        "potentail_energy": PE,
     }
     data[object_name] = object_data
 
-print( data["earth"]["pos"][0][0])
-
 
 for key in data:
-    print ("Plotting {}".format(key.capitalize()))
+    print("Plotting {}".format(key.capitalize()))
     plt.plot(data[key]["pos"][0], data[key]["pos"][1], label=key)
-    
+
+max_axis = max([np.max(np.abs(data[k]["pos"])) for k in data])
+max_axis *= 1.5
+
 plt.axis("equal")
 plt.grid(True)
-plt.xlim(-4,4)
-plt.ylim(-4,4)
+plt.xlim(-max_axis, max_axis)
+plt.ylim(-max_axis, max_axis)
 plt.legend()
 plt.show()

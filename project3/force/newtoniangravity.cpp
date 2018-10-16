@@ -1,5 +1,5 @@
 #include "newtoniangravity.h"
-#include <cmath>
+#include "sobject.h"
 
 
 NewtonianGravity::NewtonianGravity()
@@ -33,7 +33,7 @@ void NewtonianGravity::calculateForces(System *system)
 
             // Calculates the distance between object i and j
             r_temp = system->objects()[iObj]->position - system->objects()[jObj]->position;
-            r = sqrt(r_temp.length());
+            r = r_temp.length();
 
             // Sets forces from object j on i
             force_temp = r_temp / (r*r*r) * (-m_G) * (system->objects()[iObj]->mass * system->objects()[jObj]->mass / m_sunMass);
@@ -46,3 +46,10 @@ void NewtonianGravity::calculateForces(System *system)
     }
 }
 
+void NewtonianGravity::calculatePotentialEnergy(System *system)
+{
+    for (SObject *obj : system->objects())
+    {
+        obj->potentialEnergy = - m_G * obj->mass / m_sunMass / obj->position.length();
+    }
+}

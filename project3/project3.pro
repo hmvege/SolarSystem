@@ -12,7 +12,8 @@ SOURCES += \
     math/vec3.cpp \
     integrators/forwardeuler.cpp \
     force/force.cpp \
-    force/newtoniangravity.cpp
+    force/newtoniangravity.cpp \
+    integrators/velocityverlet.cpp
 
 HEADERS += \
     system.h \
@@ -22,4 +23,5 @@ HEADERS += \
     math/vec3.h \
     integrators/forwardeuler.h \
     force/force.h \
-    force/newtoniangravity.h
+    force/newtoniangravity.h \
+    integrators/velocityverlet.h

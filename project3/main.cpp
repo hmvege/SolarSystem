@@ -1,7 +1,7 @@
 #include <iostream>
 #include "system.h"
 #include "integrators/forwardeuler.h"
-//#include "integrators/integrator.h"
+#include "integrators/velocityverlet.h"
 #include "resultstorer.h"
 #include "force/newtoniangravity.h"
 
@@ -47,7 +47,7 @@ int main()
     SObject *marsObj = new SObject(mars_pos, mars_vel, mars_mass, "mars");
 
     // Specifies the number of steps, time to run for and step size
-    unsigned long NSteps = 100;
+    unsigned long NSteps = 10000;
     double T = 1; // Time, years
     double h = T / double(NSteps);
 
@@ -55,7 +55,7 @@ int main()
     string runName = "systemrun1";
 
     // Creates our system
-    System S;
+    System S(sun_mass);
 
     // New objects
     S.addObject(sunObj);
@@ -66,7 +66,8 @@ int main()
     double G = 4*M_PI*M_PI;
     double sunMass = 1988500e24;
 
-    ForwardEuler *integrator = new ForwardEuler;
+//    ForwardEuler *integrator = new ForwardEuler;
+    VelocityVerlet *integrator = new VelocityVerlet;
     NewtonianGravity *force = new NewtonianGravity(G, sunMass);
 
     S.setIntegrator(integrator);
@@ -81,14 +82,7 @@ int main()
     S.objects()[1]->printObject();
 
     for (unsigned int i = 0; i<NSteps;i++) {
-        // Resets old forces
-//        S.resetForces();
-
-        // Calculate forces
-//        force->calculateForces(&S);
-
         // Integrate system one step ahead
-//        integrator->integrate(&S, h);
         S.update(h);
 
         // Pushes new results in

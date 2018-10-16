@@ -16,3 +16,8 @@ void Force::calculateForces(System *system)
 {
 
 }
+
+void Force::calculatePotentialEnergy(System *system)
+{
+
+}

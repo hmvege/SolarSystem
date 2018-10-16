@@ -15,6 +15,9 @@ private:
 
     std::vector<vec3> m_positions;
     std::vector<vec3> m_velocities;
+    std::vector<double> m_kineticEnergies;
+    std::vector<double> m_potentialEnergies;
+    std::vector<vec3> m_angularMomentum;
     std::vector<std::string> m_objectNames;
 
     // Contigious memory allocation

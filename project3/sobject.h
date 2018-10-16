@@ -14,6 +14,9 @@ public:
     vec3 velocity;
     vec3 force;
     double mass;
+    double kineticEnergy;
+    double potentialEnergy;
+    vec3 angularMomentum;
 
     std::string name;
 
