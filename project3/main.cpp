@@ -28,7 +28,7 @@ int main()
 //    vec3 earth_pos = {7.568866818711384E-01, 6.483949789024712E-01, -1.019825122556535E-04};
 //    vec3 earth_vel = {-1.140300222458833E-02, 1.307463198392195E-02, -8.646472327809290E-07};
     vec3 earth_pos = {1,0,0};
-    vec3 earth_vel = {0,2*M_PI*sqrt(2.0)*0.99,0};
+    vec3 earth_vel = {0,2*M_PI,0};
 //    earth_vel *= time_normalization; // since [v] = [au/day]
     double earth_mass = 5.97219e24;
     earth_mass /= sun_mass;
@@ -60,8 +60,8 @@ int main()
     SObject *marsObj = new SObject(mars_pos, mars_vel, mars_mass, "mars");
 
     // Specifies the number of steps, time to run for and step size
-    unsigned long NSteps = 100000;
-    double T = 100; // Time, years
+    unsigned long NSteps = 100;
+    double T = 1; // Time, years
     double h = T / double(NSteps);
 
     // Specify run name here
@@ -72,19 +72,19 @@ int main()
 
     // New objects
     S.addObject(sunObj);
-//    S.addObject(earthObj);
-    S.addObject(mercuryObj);
+    S.addObject(earthObj);
+//    S.addObject(mercuryObj);
 //    S.addObject(marsObj);
 //    S.addObject(jupiterObj);
 
     double G = 4*M_PI*M_PI;
 
-//    ForwardEuler *integrator = new ForwardEuler;
-    VelocityVerlet *integrator = new VelocityVerlet;
+    ForwardEuler *integrator = new ForwardEuler;
+//    VelocityVerlet *integrator = new VelocityVerlet;
 
-//    NewtonianGravity *force = new NewtonianGravity(G);
+    NewtonianGravity *force = new NewtonianGravity(G);
 //    ModifiedGravity *force = new ModifiedGravity(G);
-    NewtonianGravityCorrected *force = new NewtonianGravityCorrected(G);
+//    NewtonianGravityCorrected *force = new NewtonianGravityCorrected(G);
 //    force->setBeta(3);
 
     // Analytic escape velocity: sqrt(2*G*M/r0)
