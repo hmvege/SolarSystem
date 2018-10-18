@@ -1,22 +1,22 @@
-#include "newtoniangravity.h"
+#include "modifiedgravity.h"
 #include "sobject.h"
 
 
-NewtonianGravity::NewtonianGravity()
+ModifiedGravity::ModifiedGravity()
 {
 
 }
 
-NewtonianGravity::NewtonianGravity(double G) : m_G(G)
+ModifiedGravity::ModifiedGravity(double G) : m_G(G)
 {
 
 }
 
-NewtonianGravity::~NewtonianGravity()
+ModifiedGravity::~ModifiedGravity()
 {
 }
 
-void NewtonianGravity::calculateForces(System *system)
+void ModifiedGravity::calculateForces(System *system)
 {
     /*
      * Takes the system class and calculates forces between the objects
@@ -24,6 +24,7 @@ void NewtonianGravity::calculateForces(System *system)
 
     // Distance, temporary distance vector and temporary force vector
     double r = 0;
+    double rbeta = 0;
     vec3 r_temp(0, 0, 0);
     vec3 force_temp(0, 0, 0);
 
@@ -34,9 +35,10 @@ void NewtonianGravity::calculateForces(System *system)
             // Calculates the distance between object i and j
             r_temp = system->objects()[iObj]->position - system->objects()[jObj]->position;
             r = r_temp.length();
+            rbeta = pow(r, m_beta);
 
             // Sets forces from object j on i
-            force_temp = r_temp / (r*r*r) * (-m_G) * (system->objects()[iObj]->mass * system->objects()[jObj]->mass);
+            force_temp = r_temp / rbeta * (-m_G) * (system->objects()[iObj]->mass * system->objects()[jObj]->mass);
             system->objects()[iObj]->force += force_temp;
 
             // Uses N3L and sets forces from object i on j
@@ -46,7 +48,7 @@ void NewtonianGravity::calculateForces(System *system)
     }
 }
 
-void NewtonianGravity::calculatePotentialEnergy(System *system)
+void ModifiedGravity::calculatePotentialEnergy(System *system)
 {
     // Temporary distance vector defined as r = |x_i - x_j|
     vec3 distance = {0,0,0};
@@ -61,7 +63,7 @@ void NewtonianGravity::calculatePotentialEnergy(System *system)
         {
             if (iobj == jobj) continue;
             distance = iobj->position - jobj->position;
-            iobj->potentialEnergy += (-1)*m_G * jobj->mass / distance.length();
+            iobj->potentialEnergy += (-1)*m_G * jobj->mass / pow(distance.length(), m_beta-2) / (-(m_beta-2));
         }
     }
 }

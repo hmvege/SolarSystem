@@ -2,6 +2,7 @@
 #define VEC3_H
 
 #include <iostream>
+#include <iomanip>
 #include <cmath>
 
 class vec3
@@ -53,7 +54,10 @@ public:
 
     // A cout << foo overload method.
     friend std::ostream &operator<<(std::ostream &os, const vec3 &V) {
+        auto oldPrecision = std::cout.precision(15);
+        os << std::fixed << std::setprecision(15);
         os << "[" << V.x() << ", " << V.y() << ", " << V.z() << "]";
+        std::setprecision(int(oldPrecision));
         return os;
     }
 

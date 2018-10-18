@@ -4,7 +4,7 @@
 
 // TODO: implement remove-total-momentum
 
-System::System(double normalizerMass) : m_normalizerMass(normalizerMass)
+System::System()
 {
 
 }
@@ -48,8 +48,8 @@ void System::calculateForces()
 void System::updateEnergies()
 {
     for (SObject *obj : m_objects) {
-        obj->kineticEnergy = dot(obj->velocity, obj->velocity) * obj->mass / m_normalizerMass * 0.5;
-        obj->angularMomentum = obj->mass / m_normalizerMass * cross(obj->position, obj->velocity);
+        obj->kineticEnergy = dot(obj->velocity, obj->velocity) * obj->mass * 0.5;
+        obj->angularMomentum = obj->mass * cross(obj->position, obj->velocity);
     }
     m_force->calculatePotentialEnergy(this);
 }

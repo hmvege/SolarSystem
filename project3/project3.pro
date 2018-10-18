@@ -13,7 +13,11 @@ SOURCES += \
     integrators/forwardeuler.cpp \
     force/force.cpp \
     force/newtoniangravity.cpp \
-    integrators/velocityverlet.cpp
+    force/modifiedgravity.cpp \
+    force/newtoniangravitycorrected.cpp \
+    integrators/velocityverlet.cpp \
+    integrators/eulercromer.cpp \
+
 
 HEADERS += \
     system.h \
@@ -24,4 +28,7 @@ HEADERS += \
     integrators/forwardeuler.h \
     force/force.h \
     force/newtoniangravity.h \
-    integrators/velocityverlet.h
+    force/modifiedgravity.h \
+    force/newtoniangravitycorrected.h \
+    integrators/velocityverlet.h \
+    integrators/eulercromer.h \

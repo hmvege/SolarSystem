@@ -20,11 +20,9 @@ private:
 
     Force *m_force;
 
-    double m_normalizerMass;
-
     vector<SObject*> m_objects;
 public:
-    System(double normalizerMass);
+    System();
     ~System();
 
     void addObject(SObject *object) { m_objects.push_back(object); }

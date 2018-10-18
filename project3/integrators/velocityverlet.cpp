@@ -32,7 +32,6 @@ void VelocityVerlet::integrate(System *system, const double h)
         sobj->position += sobj->velocity*h;
     }
 
-    system->resetForces();
     system->calculateForces();
 
     for (SObject *sobj : system->objects()) {

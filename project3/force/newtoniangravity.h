@@ -7,10 +7,9 @@ class NewtonianGravity : public Force
 {
 private:
     double m_G = 0;
-    double m_sunMass = 0;
 public:
     NewtonianGravity();
-    NewtonianGravity(double G, double sunMass);
+    NewtonianGravity(double G);
     ~NewtonianGravity();
 
     void calculateForces(System *system);
