@@ -32,24 +32,29 @@ for filename in os.listdir("data"):
     }
     data[object_name] = object_data
 
-# for key in data:
-#     if key in acceptable_keys:
-#         print("Plotting {}".format(key.capitalize()))
-#         plt.plot(data[key]["pos"][0], data[key]["pos"][1], label=key)
+# Summing total energy
+total_energy = []
+for key in data:
+    data[key]["kinetic_energy"]
+    data[key]["potentail_energy"]
+
+for key in data:
+    if key in acceptable_keys:
+        print("Plotting {}".format(key.capitalize()))
+        plt.plot(data[key]["pos"][0], data[key]["pos"][1], label=key)
 
 max_axis = max([np.max(np.abs(data[k]["pos"])) for k in data])
 max_axis *= 1.5
 
-# Mercury precession
-theta = np.arctan(data["mercury"]["pos"][1]/data["mercury"]["pos"][0])*180 / np.pi / 60 / 60
-theta_max = theta[np.where((theta > 0.024))]
-
-plt.plot(theta_max)
-plt.show()
-
-# plt.axis("equal")
-# plt.grid(True)
-# plt.xlim(-max_axis, max_axis)
-# plt.ylim(-max_axis, max_axis)
-# plt.legend()
+# # Mercury precession
+# theta = np.arctan(data["mercury"]["pos"][1]/data["mercury"]["pos"][0])*180 / np.pi / 60 / 60
+# theta_max = theta[np.where((theta > 0.024))]
+# plt.plot(theta_max)
 # plt.show()
+
+plt.axis("equal")
+plt.grid(True)
+plt.xlim(-max_axis, max_axis)
+plt.ylim(-max_axis, max_axis)
+plt.legend()
+plt.show()

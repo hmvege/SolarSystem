@@ -73,7 +73,7 @@ void ResultStorer::writeToFile(string runName)
         for (unsigned long iStep = 0; iStep < m_NSteps; iStep++) {
 
             for (unsigned long i = 0; i < 3; ++i) {
-                file << m_positions.at(getIndex(iStep, iObj))[i] << " ";
+                file << m_positions[getIndex(iStep, iObj)][i] << " ";
             }
 
             for (unsigned long i = 0; i < 3; ++i) {

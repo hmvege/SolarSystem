@@ -21,3 +21,4 @@ void SObject::printObject()
             velocity[0], velocity[1], velocity[2],
             angularMomentum.x(), angularMomentum.y(), angularMomentum.z());
 }
+

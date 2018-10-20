@@ -3,6 +3,7 @@
 #include "system.h"
 #include "integrators/forwardeuler.h"
 #include "integrators/velocityverlet.h"
+#include "integrators/eulercromer.h"
 #include "resultstorer.h"
 #include "force/newtoniangravity.h"
 #include "force/modifiedgravity.h"
@@ -16,20 +17,20 @@ int main()
     double time_normalization = 365.25;
 
     // Sun
-//    vec3 sun_pos = {-2.996929750308121E-04, 7.299007490141281E-03, -6.887565019562871E-05};
-//    vec3 sun_vel = {-7.635678308544194E-06, 2.420578297394992E-06, 1.909523923438376E-07};
-    vec3 sun_pos = {0,0,0};
-    vec3 sun_vel = {0,0,0};
-//    sun_vel *= time_normalization; // since [v] = [au/day]
+    vec3 sun_pos = {-2.996929750308121E-04, 7.299007490141281E-03, -6.887565019562871E-05};
+    vec3 sun_vel = {-7.635678308544194E-06, 2.420578297394992E-06, 1.909523923438376E-07};
+//    vec3 sun_pos = {0,0,0};
+//    vec3 sun_vel = {0,0,0};
+    sun_vel *= time_normalization; // since [v] = [au/day]
     double sun_mass = 11988500e24;
     SObject *sunObj = new SObject(sun_pos, sun_vel, 1.0, "sun");
 
     // Earth
-//    vec3 earth_pos = {7.568866818711384E-01, 6.483949789024712E-01, -1.019825122556535E-04};
-//    vec3 earth_vel = {-1.140300222458833E-02, 1.307463198392195E-02, -8.646472327809290E-07};
-    vec3 earth_pos = {1,0,0};
-    vec3 earth_vel = {0,2*M_PI,0};
-//    earth_vel *= time_normalization; // since [v] = [au/day]
+    vec3 earth_pos = {7.568866818711384E-01, 6.483949789024712E-01, -1.019825122556535E-04};
+    vec3 earth_vel = {-1.140300222458833E-02, 1.307463198392195E-02, -8.646472327809290E-07};
+//    vec3 earth_pos = {1,0,0};
+//    vec3 earth_vel = {0,2*M_PI,0};
+    earth_vel *= time_normalization; // since [v] = [au/day]
     double earth_mass = 5.97219e24;
     earth_mass /= sun_mass;
     SObject *earthObj = new SObject(earth_pos, earth_vel, earth_mass, "earth");
@@ -60,7 +61,7 @@ int main()
     SObject *marsObj = new SObject(mars_pos, mars_vel, mars_mass, "mars");
 
     // Specifies the number of steps, time to run for and step size
-    unsigned long NSteps = 100;
+    unsigned long NSteps = 100000;
     double T = 1; // Time, years
     double h = T / double(NSteps);
 
@@ -73,19 +74,20 @@ int main()
     // New objects
     S.addObject(sunObj);
     S.addObject(earthObj);
-//    S.addObject(mercuryObj);
-//    S.addObject(marsObj);
-//    S.addObject(jupiterObj);
+    S.addObject(mercuryObj);
+    S.addObject(marsObj);
+    S.addObject(jupiterObj);
 
     double G = 4*M_PI*M_PI;
 
-    ForwardEuler *integrator = new ForwardEuler;
-//    VelocityVerlet *integrator = new VelocityVerlet;
+//    ForwardEuler *integrator = new ForwardEuler;
+//    EulerCromer *integrator = new EulerCromer;
+    VelocityVerlet *integrator = new VelocityVerlet;
 
     NewtonianGravity *force = new NewtonianGravity(G);
 //    ModifiedGravity *force = new ModifiedGravity(G);
-//    NewtonianGravityCorrected *force = new NewtonianGravityCorrected(G);
 //    force->setBeta(3);
+//    NewtonianGravityCorrected *force = new NewtonianGravityCorrected(G);
 
     // Analytic escape velocity: sqrt(2*G*M/r0)
 
@@ -108,6 +110,7 @@ int main()
         // Pushes new results in
         res.pushResults(&S, i + 1);
     }
+
 
     // Prints final position to ensure it is the same as the start position
     S.objects()[1]->printObject();
