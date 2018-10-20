@@ -28,8 +28,10 @@ void NewtonianGravity::calculateForces(System *system)
     vec3 force_temp(0, 0, 0);
 
     // Calculates forces between all objects
-    for (unsigned int iObj = 0; iObj < system->objects().size(); iObj++) {
-        for (unsigned int jObj = iObj + 1; jObj < system->objects().size(); jObj++) {
+    for (unsigned int iObj = 0; iObj < system->objects().size(); iObj++)
+    {
+        for (unsigned int jObj = iObj + 1; jObj < system->objects().size(); jObj++)
+        {
 
             // Calculates the distance between object i and j
             r_temp = system->objects()[iObj]->position - system->objects()[jObj]->position;
@@ -61,7 +63,7 @@ void NewtonianGravity::calculatePotentialEnergy(System *system)
         {
             if (iobj == jobj) continue;
             distance = iobj->position - jobj->position;
-            iobj->potentialEnergy += (-1)*m_G * jobj->mass / distance.length();
+            iobj->potentialEnergy -= m_G * jobj->mass * iobj->mass / distance.length();
         }
     }
 }

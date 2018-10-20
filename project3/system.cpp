@@ -48,22 +48,34 @@ void System::calculateForces()
 void System::updateEnergies()
 {
     for (SObject *obj : m_objects) {
-        obj->kineticEnergy = dot(obj->velocity, obj->velocity) * obj->mass * 0.5;
+        obj->kineticEnergy = obj->velocity.lengthSquared() * obj->mass * 0.5;
         obj->angularMomentum = obj->mass * cross(obj->position, obj->velocity);
     }
     m_force->calculatePotentialEnergy(this);
 }
 
-//void System::removeTotalMomentum() {
-//    vec3 TotalVelocity(0,0,0);
+void System::removeTotalMomentum() {
+    vec3 TotalVelocity(0,0,0);
 
-//    for(Atom *atom : m_atoms) {
-//        TotalVelocity += atom->velocity;
-//    }
+    double totalMass = 0;
 
-//    TotalVelocity /= m_atoms.size();
+    for(SObject *obj : m_objects) {
+        TotalVelocity += (obj->velocity * obj->mass);
+        totalMass += obj->mass;
+    }
+    std::cout<< TotalVelocity << std::endl;
 
-//    for(Atom *atom : m_atoms) {
-//        atom->velocity -= TotalVelocity;
-//    }
-//}
+//    TotalVelocity /= (m_objects.size() * totalMass);
+    TotalVelocity /= (totalMass);
+
+
+    for(SObject *obj: m_objects) {
+        obj->velocity -= TotalVelocity;
+    }
+
+    TotalVelocity = {0,0,0};
+    for(SObject *obj : m_objects) {
+        TotalVelocity += (obj->velocity * obj->mass);
+    }
+    std::cout<< TotalVelocity << std::endl;
+}

@@ -3,3 +3,4 @@ build*
 *.autosave
 *.txt
 *.txt
+*.DS_Store

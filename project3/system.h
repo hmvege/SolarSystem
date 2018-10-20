@@ -35,6 +35,8 @@ public:
     void setIntegrator(Integrator *integrator) { m_integrator = integrator; }
     void setForce(Force *force) { m_force = force; }
 
+    void removeTotalMomentum();
+
     vector<SObject*> &objects() { return m_objects; }
 };
 
