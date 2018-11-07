@@ -32,3 +32,24 @@ HEADERS += \
     force/newtoniangravitycorrected.h \
     integrators/velocityverlet.h \
     integrators/eulercromer.h \
+
+
+# Adds processor specific optimizations
+QMAKE_CFLAGS += -march=native
+QMAKE_CXXFLAGS += -march=native
+QMAKE_CXXFLAGS_RELEASE += -march=native
+
+# Adds O3 optimizations
+QMAKE_CFLAGS += -O3
+QMAKE_CXXFLAGS += -O3
+QMAKE_CXXFLAGS_RELEASE += -O3
+
+# Forces C++11
+QMAKE_CFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS_RELEASE += -std=c++11
+
+# Removes flags
+QMAKE_CFLAGS -= -O2
+QMAKE_CXXFLAGS -= -O2
+QMAKE_CXXFLAGS_RELEASE -= -O2

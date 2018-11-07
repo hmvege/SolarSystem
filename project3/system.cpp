@@ -55,27 +55,29 @@ void System::updateEnergies()
 }
 
 void System::removeTotalMomentum() {
-    vec3 TotalVelocity(0,0,0);
+    vec3 TotalMomentum(0,0,0);
 
     double totalMass = 0;
 
     for(SObject *obj : m_objects) {
-        TotalVelocity += (obj->velocity * obj->mass);
+        TotalMomentum += (obj->velocity * obj->mass);
         totalMass += obj->mass;
     }
-    std::cout<< TotalVelocity << std::endl;
 
-//    TotalVelocity /= (m_objects.size() * totalMass);
-    TotalVelocity /= (totalMass);
-
+//    TotalMomentum /= (m_objects.size() * totalMass);
+    TotalMomentum /= (totalMass);
 
     for(SObject *obj: m_objects) {
-        obj->velocity -= TotalVelocity;
+        obj->velocity -= TotalMomentum;
     }
 
-    TotalVelocity = {0,0,0};
+}
+
+void System::checkTotalMomentum()
+{
+    vec3 TotalMomentum= {0,0,0};
     for(SObject *obj : m_objects) {
-        TotalVelocity += (obj->velocity * obj->mass);
+        TotalMomentum += (obj->velocity * obj->mass);
     }
-    std::cout<< TotalVelocity << std::endl;
+    std::cout<< TotalMomentum << std::endl;
 }

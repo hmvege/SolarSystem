@@ -36,6 +36,7 @@ public:
     void setForce(Force *force) { m_force = force; }
 
     void removeTotalMomentum();
+    void checkTotalMomentum();
 
     vector<SObject*> &objects() { return m_objects; }
 };

@@ -25,6 +25,9 @@ private:
         return iObj + m_NObjects*iStep;
     }
 
+    void writeArrayToFile(std::ofstream &file, std::vector<vec3> vec, unsigned long iObj);
+    void writeArrayToFile(std::ofstream &file, std::vector<double> vec, int iObj);
+
 public:
     ResultStorer(System *S, unsigned long NSteps);
     ~ResultStorer();

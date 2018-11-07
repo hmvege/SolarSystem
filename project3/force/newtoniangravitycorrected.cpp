@@ -29,7 +29,7 @@ void NewtonianGravityCorrected::calculateForces(System *system)
 
     // Relativistic correction variables
     double relativistic_correction = 0;
-    double angular_momentum = 0;
+    double angular_momentum_squared = 0;
     /*
      * >>> c = 299792458
      * >>> au = 149597871000
@@ -48,8 +48,11 @@ void NewtonianGravityCorrected::calculateForces(System *system)
             r = r_temp.length();
 
             // Relativistic correction
-            angular_momentum = system->objects()[iObj]->mass*cross(system->objects()[iObj]->position, system->objects()[iObj]->velocity).lengthSquared();
-            relativistic_correction = 3*angular_momentum / (r*r*c*c);
+            angular_momentum_squared = cross(r_temp, system->objects()[jObj]->velocity).lengthSquared();
+            relativistic_correction = 3*angular_momentum_squared / (r*r*c*c);
+
+//            std::cout << system->objects()[iObj]->position << " " << system->objects()[iObj]->velocity << angular_momentum_squared << " " << relativistic_correction  << std::endl;
+//            printf("%.16f %.16f\n", relativistic_correction, angular_momentum_squared);
 
             // Sets forces from object j on i
             force_temp = r_temp / (r*r*r) * (-m_G) * (system->objects()[iObj]->mass * system->objects()[jObj]->mass);

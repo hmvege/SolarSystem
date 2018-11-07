@@ -16,9 +16,10 @@ SObject::SObject(vec3 &newPosition, vec3 &newVelocity, const double newMass, std
 
 void SObject::printObject()
 {
-    printf("%8s: r=[%15.10f %15.10f %15.10f] v=[%15.10f %15.10f %15.10f] L=[%15.10f %15.10f %15.10f]\n", name.c_str(),
+    printf("%8s: r=[%15.10f %15.10f %15.10f] v=[%15.10f %15.10f %15.10f] L=[%15.10f %15.10f %15.10f] KE=%15.10f PE=%15.10f\n", name.c_str(),
            position[0], position[1], position[2],
             velocity[0], velocity[1], velocity[2],
-            angularMomentum.x(), angularMomentum.y(), angularMomentum.z());
+            angularMomentum.x(), angularMomentum.y(), angularMomentum.z(),
+            kineticEnergy, potentialEnergy);
 }
 

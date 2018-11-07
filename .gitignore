@@ -4,3 +4,5 @@ build*
 *.txt
 *.txt
 *.DS_Store
+*.bin
+*.user

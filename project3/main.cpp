@@ -35,6 +35,11 @@ int main()
     mercury_mass /= sun_mass;
     SObject *mercuryObj = new SObject(mercury_pos, mercury_vel, mercury_mass, "mercury");
 
+    vec3 mercury_pos_prec = {0.3075, 0, 0};
+    vec3 mercury_vel_prec = {0, 12.44, 0};
+    SObject *mercuryObjPrecession = new SObject(mercury_pos_prec, mercury_vel_prec, mercury_mass, "mercury");
+
+
     // Venus
     vec3 venus_pos = {-1.979804002020823E-01,  6.983650310789559E-01, 2.081035900640404E-02};
     vec3 venus_vel = {-1.952418772472886E-02, -5.665705836375252E-03,  1.048675733150797E-03};
@@ -105,12 +110,12 @@ int main()
 
 
     // Specifies the number of steps, time to run for and step size
-    unsigned long NSteps = 10000;
-    double T = 50; // Time, years
+    unsigned long NSteps = 10000000;
+    double T = 100; // Time, years
     double h = T / double(NSteps);
 
     // Specify run name here
-    string runName = "systemrun1";
+    string runName = "relativistic_run";
 
     // Creates our system
     System S;
@@ -119,16 +124,20 @@ int main()
 //    S.addObject(sunObjBasic);
 //    S.addObject(earthObjBasic);
 
-    S.addObject(sunObj);
-    S.addObject(earthObj);
-    S.addObject(mercuryObj);
-    S.addObject(venusObj);
-    S.addObject(marsObj);
-    S.addObject(jupiterObj);
-    S.addObject(saturnObj);
-    S.addObject(uranusObj);
-    S.addObject(neptuneObj);
-    S.addObject(plutoObj);
+    // Mercury precession
+    S.addObject(sunObjBasic);
+    S.addObject(mercuryObjPrecession);
+
+//    S.addObject(sunObj);
+//    S.addObject(earthObj);
+//    S.addObject(mercuryObj);
+//    S.addObject(venusObj);
+//    S.addObject(marsObj);
+//    S.addObject(jupiterObj);
+//    S.addObject(saturnObj);
+//    S.addObject(uranusObj);
+//    S.addObject(neptuneObj);
+//    S.addObject(plutoObj);
 
     double G = 4*M_PI*M_PI;
 
@@ -136,10 +145,10 @@ int main()
 //    EulerCromer *integrator = new EulerCromer;
     VelocityVerlet *integrator = new VelocityVerlet;
 
-    NewtonianGravity *force = new NewtonianGravity(G);
+//    NewtonianGravity *force = new NewtonianGravity(G);
 //    ModifiedGravity *force = new ModifiedGravity(G);
 //    force->setBeta(3);
-//    NewtonianGravityCorrected *force = new NewtonianGravityCorrected(G);
+    NewtonianGravityCorrected *force = new NewtonianGravityCorrected(G);
 
     // Analytic escape velocity: sqrt(2*G*M/r0)
 
