@@ -36,7 +36,7 @@ int main()
     SObject *mercuryObj = new SObject(mercury_pos, mercury_vel, mercury_mass, "mercury");
 
     vec3 mercury_pos_prec = {0.3075, 0, 0};
-    vec3 mercury_vel_prec = {0, 12.44, 0};
+    vec3 mercury_vel_prec = {0, 12.44, 0};  
     SObject *mercuryObjPrecession = new SObject(mercury_pos_prec, mercury_vel_prec, mercury_mass, "mercury");
 
 
@@ -110,7 +110,7 @@ int main()
 
 
     // Specifies the number of steps, time to run for and step size
-    unsigned long NSteps = 10000000;
+    unsigned long NSteps = 1e9;
     double T = 100; // Time, years
     double h = T / double(NSteps);
 
@@ -119,6 +119,13 @@ int main()
 
     // Creates our system
     System S;
+
+    // Store results
+    bool storeResults = false;
+
+    // At least 10^8 points, preferable 10^9 steps to see a difference in precesion.
+    // Store perihelion values
+    bool storePerihelion = true;
 
     // New objects
 //    S.addObject(sunObjBasic);
@@ -149,6 +156,8 @@ int main()
 //    ModifiedGravity *force = new ModifiedGravity(G);
 //    force->setBeta(3);
     NewtonianGravityCorrected *force = new NewtonianGravityCorrected(G);
+    S.storePerihelionValues(storePerihelion);
+    S.forceStationarySun(storePerihelion);
 
     // Analytic escape velocity: sqrt(2*G*M/r0)
 
@@ -157,30 +166,57 @@ int main()
     S.setIntegrator(integrator);
     S.setForce(force);
 
-    ResultStorer res(&S, NSteps+1);
+    ResultStorer res;
+    if (storeResults) {
+        res.initialize(&S, NSteps+1);
 
-    // Push initial positions and velocities to file.
-    S.updateEnergies();
-    res.pushResults(&S, 0);
-
+        // Push initial positions and velocities to file.
+        S.updateEnergies();
+        res.pushResults(&S, 0);
+    }
 
     // Prints start position
     S.objects()[1]->printObject();
 
+    // Integration loop
     for (unsigned int i = 0; i<NSteps;i++) {
         // Integrate system one step ahead
         S.update(h);
 
-        // Pushes new results in
-        res.pushResults(&S, i + 1);
+        if (storeResults) {
+            // Pushes new results in
+            res.pushResults(&S, i + 1);
+        }
     }
 
+
+    double tanTheta = 0;
+    double theta = 0;
+    for (SObject *obj : S.objects())
+    {
+        // Skips the sun
+        if (obj->name == "sun") continue;
+
+        // Calculates the tanh
+        cout << obj->name << " perihelion values: " << endl;
+        for (int iPeri = 0; iPeri < obj->perihelion.perhielionPosition.size(); iPeri++) {
+            tanTheta = obj->perihelion.perhielionPosition[iPeri].y() / obj->perihelion.perhielionPosition[iPeri].x();
+            theta = atan(tanTheta);
+            theta *= (3600*180) / M_PI;
+            cout << theta << endl;
+        }
+        cout << "Number of perihelions: " << obj->perihelion.perhielionPosition.size() << endl;
+        cout << obj->name << " precesion after " << T << " years: " << theta << endl;
+        cout << endl;
+    }
 
     // Prints final position to ensure it is the same as the start position
     S.objects()[1]->printObject();
 
-    // Writes the results to file
-    res.writeToFile(runName);
+    if (storeResults) {
+        // Writes the results to file
+        res.writeToFile(runName);
+    }
 
     return 0;
 }

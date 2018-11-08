@@ -33,10 +33,41 @@ void System::resetForces() {
 
 void System::update(const double timestep)
 {
-//    resetForces();
-//    calculateForces();
+    // Forces sun to be stationary. Used for calculating precesion.
+    if (m_forceStationarySun) {
+        setSunStationary();
+    }
+
     m_integrator->integrate(this, timestep);
     updateEnergies();
+    if (m_storePerihelion) {
+        if (!m_firstPerihelionStep) {
+            for (SObject *obj : m_objects) {
+                obj->perihelion.previousPos = obj->position;
+            }
+            m_firstPerihelionStep = true;
+        }
+        else {
+            // Updates perihelion positions
+            for (SObject *obj : m_objects) {
+                obj->perihelion.previousPreviousPos = obj->perihelion.previousPos;
+                obj->perihelion.previousPos = obj->perihelion.currentPos;
+                obj->perihelion.currentPos = obj->position;
+            }
+
+            for (SObject *obj : m_objects) {
+                double prevLength = obj->perihelion.previousPos.length();
+                if ((prevLength < obj->perihelion.currentPos.length())
+                        && (prevLength < obj->perihelion.previousPreviousPos.length())) {
+//                    vec3 tempPos = obj->position;
+//                    vec3 tempVel = obj->velocity;
+                    obj->perihelion.perhielionPosition.push_back(obj->position);
+                    obj->perihelion.perhielionVelocity.push_back(obj->velocity);
+                }
+            }
+        }
+
+    }
 }
 
 void System::calculateForces()
@@ -54,6 +85,33 @@ void System::updateEnergies()
     m_force->calculatePotentialEnergy(this);
 }
 
+void System::storePerihelionValues(bool storePerihelion) {
+    /*
+     * Sets up objects for storing perihelion values, and initializes
+     * prev-prev values.
+     */
+    for (SObject *obj : m_objects) {
+        obj->initializePerihelion();
+    }
+    m_storePerihelion = storePerihelion;
+}
+
+void System::forceStationarySun(bool forceStationary)
+{
+    m_forceStationarySun = forceStationary;
+}
+
+void System::setSunStationary()
+{
+    for (SObject *obj : m_objects) {
+        if (obj->name == "sun") {
+            obj->position = {0,0,0};
+            obj->velocity = {0,0,0};
+        }
+    }
+}
+
+
 void System::removeTotalMomentum() {
     vec3 TotalMomentum(0,0,0);
 
@@ -64,7 +122,7 @@ void System::removeTotalMomentum() {
         totalMass += obj->mass;
     }
 
-//    TotalMomentum /= (m_objects.size() * totalMass);
+    //    TotalMomentum /= (m_objects.size() * totalMass);
     TotalMomentum /= (totalMass);
 
     for(SObject *obj: m_objects) {

@@ -32,6 +32,7 @@ HEADERS += \
     force/newtoniangravitycorrected.h \
     integrators/velocityverlet.h \
     integrators/eulercromer.h \
+    perihelionstorer.h
 
 
 # Adds processor specific optimizations

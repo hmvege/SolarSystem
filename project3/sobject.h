@@ -3,6 +3,7 @@
 
 #include <string>
 #include "math/vec3.h"
+#include "perihelionstorer.h"
 
 class SObject
 {
@@ -21,6 +22,10 @@ public:
     std::string name;
 
     void printObject();
+
+    PerihelionStorer perihelion;
+
+    void initializePerihelion();
 
 };
 

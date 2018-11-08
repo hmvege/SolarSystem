@@ -1,4 +1,4 @@
-#include "NewtonianGravityCorrected.h"
+#include "newtoniangravitycorrected.h"
 #include "sobject.h"
 
 

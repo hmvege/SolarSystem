@@ -6,7 +6,21 @@
 using std::cout;
 using std::endl;
 
+ResultStorer::ResultStorer() {
+
+}
+
 ResultStorer::ResultStorer(System *S, unsigned long NSteps)
+{
+    initialize(S, NSteps);
+}
+
+ResultStorer::~ResultStorer()
+{
+
+}
+
+void ResultStorer::initialize(System *S, unsigned long NSteps)
 {
     // Gets the number of objects
     m_NObjects = S->objects().size();
@@ -29,11 +43,6 @@ ResultStorer::ResultStorer(System *S, unsigned long NSteps)
     for (unsigned long iObj = 0; iObj < m_NObjects; iObj++) {
         m_objectNames[iObj] = S->objects()[iObj]->name;
     }
-}
-
-ResultStorer::~ResultStorer()
-{
-
 }
 
 void ResultStorer::pushResults(System *S, unsigned long iStep)
@@ -61,46 +70,10 @@ void ResultStorer::writeToFile(string runName)
         std::ofstream file;
 
         // Sets up the filename
-//        string filename = "../data/" + runName + "_" + m_objectNames[iObj] + "_orbital_data.txt";
         string filename = "../data/" + runName + "_" + m_objectNames[iObj] + "_orbital_data.bin";
 
         // Opens a file to write with
-//        file.open(filename);
         file.open(filename, std::ofstream::binary);
-
-        // Ensures we have a precision of 15 decimals
-//        file << std::fixed << std::setprecision(15);
-
-        // Loops over results and stores them in 6 columns
-//        for (unsigned long iStep = 0; iStep < m_NSteps; iStep++) {
-
-//            for (unsigned long i = 0; i < 3; ++i) {
-//                file << m_positions[getIndex(iStep, iObj)][i] << " ";
-//            }
-
-//            for (unsigned long i = 0; i < 3; ++i) {
-//                file << m_velocities[getIndex(iStep, iObj)][i] << " ";
-//            }
-
-//            for (unsigned long i = 0; i < 3; ++i) {
-//                file << m_angularMomentum[getIndex(iStep, iObj)][i] << " ";
-//            }
-
-//            file << m_kineticEnergies[getIndex(iStep, iObj)] << " ";
-//            file << m_potentialEnergies[getIndex(iStep, iObj)] << " ";
-
-//            // Newline
-//            file << endl;
-//        }
-
-//        double tmp_arr[3*m_NSteps];
-//        for (unsigned long iStep = 0; iStep < m_NSteps; iStep++) {
-//            for (unsigned long j = 0; j < 3; j++) {
-//                tmp_arr[3*iStep + j] = m_positions[getIndex(iStep, iObj)][j];
-//            }
-//        }
-
-//        file.write(reinterpret_cast<const char*> (&tmp_arr), 3*m_NSteps*sizeof(double));
 
         writeArrayToFile(file, m_positions, iObj);
         writeArrayToFile(file, m_velocities, iObj);

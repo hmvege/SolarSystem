@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import os
+from scipy.signal import find_peaks
 
 # acceptable_keys = ["earth", "sun"]
 # acceptable_keys = ["earth", "sun", "jupiter"]
@@ -30,7 +31,6 @@ for filename in os.listdir("data"):
     else:
         continue
 
-
     print(object_name.capitalize(), "at", filepath)
 
     # Old method
@@ -41,9 +41,9 @@ for filename in os.listdir("data"):
 
     N = int(bin_data.shape[0] / 11)
 
-    x, y, z = bin_data[:3*N].reshape((N,3)).T
-    vx, vy, vz = bin_data[3*N: 3*N*2].reshape((N,3)).T
-    Lx, Ly, Lz = bin_data[3*N*2: 3*N*3].reshape((N,3)).T
+    x, y, z = bin_data[:3*N].reshape((N, 3)).T
+    vx, vy, vz = bin_data[3*N: 3*N*2].reshape((N, 3)).T
+    Lx, Ly, Lz = bin_data[3*N*2: 3*N*3].reshape((N, 3)).T
     KE = bin_data[3*N*3: 10*N]
     PE = bin_data[10*N:]
 
@@ -58,7 +58,7 @@ for filename in os.listdir("data"):
     }
     data[object_name] = object_data
 
-if len(data.values())==0:
+if len(data.values()) == 0:
     raise IOError("No data found for run: {}".format(runname))
 
 # # Summing total energy
@@ -82,63 +82,85 @@ if len(data.values())==0:
 # Selects closest approach values
 data_sun = data["sun"]["pos"]
 data_mercury = data["mercury"]["pos"]
-distances = np.linalg.norm(data_sun - data_mercury, axis=0)
 
-xy_closest_approach = [[0, distances[0]]]
+distances = np.linalg.norm(data_mercury - data_sun, axis=0)
+# minima_indices = find_peaks(distances)[0]
+minima_indices = []
+for i in range(1, distances.shape[0]-1):
+    if (distances[i] < distances[i+1]) and (distances[i] < distances[i-1]):
+        minima_indices.append(i)
 
-xy_cords = []
-mercury_perihelions = []
+minima_indices = np.asarray(minima_indices)
 
-for i in range(1, data_sun.shape[1]-1):
-    if (distances[i-1] > distances[i]) and (distances[i+1] > distances[i]):
-        xy_closest_approach.append([i, distances[i]])
-        xy_cords.append(data_sun[:,i] - data_mercury[:,i])
-        mercury_perihelions.append(data_mercury[:,i])
+# xy_closest_approach = [[0, distances[0]]]
 
-xy_cords = np.asarray(xy_cords)
-mercury_perihelions = np.asarray(mercury_perihelions)
+# xy_cords = []
+# mercury_perihelions = []
+
+# for i in range(1, data_sun.shape[1]-1):
+#     if (distances[i-1] > distances[i]) and (distances[i+1] > distances[i]):
+#         xy_closest_approach.append([i, distances[i]])
+#         xy_cords.append(data_sun[:, i] - data_mercury[:, i])
+#         mercury_perihelions.append(data_mercury[:, i])
+
+# xy_cords = np.asarray(xy_cords)
+# mercury_perihelions = np.asarray(mercury_perihelions)
+
+x = data_sun[0, minima_indices] - data_mercury[0, minima_indices]
+y = data_sun[1, minima_indices] - data_mercury[1, minima_indices]
+tan_yx = y / x
+arcsecs = np.pi / (3600*180)
+peri = np.arctan(tan_yx)
+peri0 = np.arctan(0)
 
 # print(xy_cords.shape)
 # print(xy_closest_approach)
 
-theta = np.arctan2(xy_cords[:,1], xy_cords[:,0])#*180 / np.pi * (3600)
+# theta = np.arctan2(xy_cords[:, 1], xy_cords[:, 0])  # *180 / np.pi * (3600)
 
 # print ((theta[-1] - theta[0])*180/np.pi*3600)
-x_mins = []
-theta_mins = []
+# x_mins = []
+# theta_mins = []
 
 # for i in range(1, len(theta)-1):
 #     if (theta[i-1] > theta[i]) and (theta[i+1] > theta[i]):
 #         theta_mins.append(theta[i])
 #         x_mins.append(i)
-# print (theta_mins[0] - theta_mins[-1])
+# print(theta_mins[0] - theta_mins[-1])
 
-print (np.abs(theta[0] - theta[-1]) * 180/np.pi*3600)
-print(mercury_perihelions[0,0], mercury_perihelions[0,1])
-print(mercury_perihelions[-1,0], mercury_perihelions[-1,1])
-
-plt.plot(data["mercury"]["pos"][0], data["mercury"]["pos"][1], label="Mercury", zorder=1)
-plt.plot(mercury_perihelions[:,0], mercury_perihelions[:,1], "o", label="Mercury perhihelions", zorder=2)
-plt.scatter(mercury_perihelions[0,0], mercury_perihelions[0,1], label=r"$i=0$", color="#145A46FF", zorder=3)
-plt.scatter(mercury_perihelions[-1,0], mercury_perihelions[-1,1], label=r"$i=100$", color="#145A46FF", zorder=3)
-
-i_y_min = np.argmin(mercury_perihelions[:,1])
-i_y_max = np.argmax(mercury_perihelions[:,1])
-plt.scatter(mercury_perihelions[i_y_min,0], mercury_perihelions[i_y_min,1], label=r"$i={}$".format(i_y_min), color="#74D723FF", zorder=3)
-plt.scatter(mercury_perihelions[i_y_max,0], mercury_perihelions[i_y_max,1], label=r"$i={}$".format(i_y_max), color="#74D723FF", zorder=3)
-
-
-print((np.abs(np.arctan(mercury_perihelions[0,1]/mercury_perihelions[0,0]) - np.arctan(mercury_perihelions[-1,1]/mercury_perihelions[-1,0])))*180/np.pi*3600)
-print((np.abs(np.arctan(mercury_perihelions[i_y_min,1]/mercury_perihelions[i_y_min,0]) - np.arctan(mercury_perihelions[i_y_max,1]/mercury_perihelions[i_y_max,0])))*180/np.pi*3600)
-
-plt.legend()
+theta_gr = (peri - peri0) / arcsecs
+plt.plot(theta_gr, "--.")
+plt.scatter([0, len(theta_gr)], [0, 44], color="r",)
 plt.show()
+
+print ("Theta diff: ", (peri[-1] - peri0)/ arcsecs)
+exit(1)
+
+# print (np.abs(theta[0] - theta[-1]) * 180/np.pi*3600)
+# print(mercury_perihelions[0,0], mercury_perihelions[0,1])
+# print(mercury_perihelions[-1,0], mercury_perihelions[-1,1])
+
+# plt.plot(data["mercury"]["pos"][0], data["mercury"]["pos"][1], label="Mercury", zorder=1)
+# plt.plot(mercury_perihelions[:,0], mercury_perihelions[:,1], "o", label="Mercury perhihelions", zorder=2)
+# plt.scatter(mercury_perihelions[0,0], mercury_perihelions[0,1], label=r"$i=0$", color="#145A46FF", zorder=3)
+# plt.scatter(mercury_perihelions[-1,0], mercury_perihelions[-1,1], label=r"$i=100$", color="#145A46FF", zorder=3)
+
+# i_y_min = np.argmin(mercury_perihelions[:,1])
+# i_y_max = np.argmax(mercury_perihelions[:,1])
+# plt.scatter(mercury_perihelions[i_y_min,0], mercury_perihelions[i_y_min,1], label=r"$i={}$".format(i_y_min), color="#74D723FF", zorder=3)
+# plt.scatter(mercury_perihelions[i_y_max,0], mercury_perihelions[i_y_max,1], label=r"$i={}$".format(i_y_max), color="#74D723FF", zorder=3)
+
+# print((np.abs(np.arctan(mercury_perihelions[0,1]/mercury_perihelions[0,0]) - np.arctan(mercury_perihelions[-1,1]/mercury_perihelions[-1,0])))*180/np.pi*3600)
+# print((np.abs(np.arctan(mercury_perihelions[i_y_min,1]/mercury_perihelions[i_y_min,0]) - np.arctan(mercury_perihelions[i_y_max,1]/mercury_perihelions[i_y_max,0])))*180/np.pi*3600)
+
+# plt.legend()
+# plt.show()
 
 # # Plots planets
 # for key in data:
 #     if key in acceptable_keys:
 #         print("Plotting {}".format(key.capitalize()))
-#         plt.plot(data[key]["pos"][0], data[key]["pos"][1], 
+#         plt.plot(data[key]["pos"][0], data[key]["pos"][1],
 #            label=key.capitalize())
 # max_axis = max([np.max(np.abs(data[k]["pos"])) for k in data])
 # max_axis *= 1.5

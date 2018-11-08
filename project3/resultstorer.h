@@ -29,9 +29,11 @@ private:
     void writeArrayToFile(std::ofstream &file, std::vector<double> vec, int iObj);
 
 public:
+    ResultStorer();
     ResultStorer(System *S, unsigned long NSteps);
     ~ResultStorer();
 
+    void initialize(System *S, unsigned long NSteps);
     void pushResults(System *S, unsigned long iStep);
     void writeToFile(string runName);
 };

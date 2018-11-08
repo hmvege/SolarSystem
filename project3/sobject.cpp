@@ -23,3 +23,7 @@ void SObject::printObject()
             kineticEnergy, potentialEnergy);
 }
 
+void SObject::initializePerihelion()
+{
+    perihelion.currentPos = position;
+}
