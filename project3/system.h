@@ -26,9 +26,9 @@ private:
     bool m_firstPerihelionStep = false;
     vector <PerihelionStorer*>m_perihelionValues; // A vector of the objects perihelion angles
 
-    Integrator *m_integrator;
+    Integrator *m_integrator = nullptr;
 
-    Force *m_force;
+    Force *m_force = nullptr;
 
     vector<SObject*> m_objects;
 public:
