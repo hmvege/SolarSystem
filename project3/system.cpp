@@ -59,8 +59,6 @@ void System::update(const double timestep)
                 double prevLength = obj->perihelion.previousPos.length();
                 if ((prevLength < obj->perihelion.currentPos.length())
                         && (prevLength < obj->perihelion.previousPreviousPos.length())) {
-//                    vec3 tempPos = obj->position;
-//                    vec3 tempVel = obj->velocity;
                     obj->perihelion.perhielionPosition.push_back(obj->position);
                     obj->perihelion.perhielionVelocity.push_back(obj->velocity);
                 }

@@ -71,7 +71,6 @@ void ResultStorer::writeToFile(string runName)
 
         // Sets up the filename
         string filename = "../data/" + runName + "_" + m_objectNames[iObj] + "_orbital_data.bin";
-
         // Opens a file to write with
         file.open(filename, std::ofstream::binary);
 
